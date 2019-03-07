@@ -1,11 +1,11 @@
 import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
-import { bottle } from "../../provider/Bottle";
+import Dropzone from "react-dropzone";
+import { bottle } from "../provider/Bottle";
 
 export class ImportParticipants extends React.Component {
   importService = bottle.container.ParticipantImportService;
@@ -53,14 +53,18 @@ export class ImportParticipants extends React.Component {
           Import Participants
         </Typography>
         <Grid container justify="center">
-          <FileUpload
+          <Dropzone
             id="import-Participants"
-            fileTypes=".csv"
+            accept=".csv"
             onDrop={this.onFileLoad}
-            filesUploaded={this.state.file ? [this.state.file] : []}
           >
-            {"Click or drag to add a file..."}
-          </FileUpload>
+            {({ getRootProps, getInputProps }) => (
+              <div {...getRootProps()}>
+                <input id="file-input" {...getInputProps()} />
+                Click or drag to add a file...
+              </div>
+            )}
+          </Dropzone>
         </Grid>
         <div style={{ margin: "1rem 0" }}>
           <Typography variant="body1" id="simple-modal-description">
@@ -78,29 +82,25 @@ export class ImportParticipants extends React.Component {
           <Typography variant="body2" id="simple-modal-description">
             <li>Imported file must be of type .csv</li>
             <li>Row one must include the label of the field</li>
-            <li>File must include email address</li>
           </Typography>
         </div>
         <div>
-          <Typography variant="title" id="simple-modal-description">
+          <Typography variant="body1" id="simple-modal-description">
             Replace current participants
+            <Checkbox onChange={this.onCheckboxChange} />
           </Typography>
-          <Checkbox onChange={this.onCheckboxChange} />
-          />
         </div>
-        <ButtonGroup layout="right">
-          <Button id="close" onClick={this.onModalClose}>
-            Cancel
-          </Button>
-          <Button
-            disabled={!this.state.file}
-            id="upload"
-            color="primary"
-            onClick={this.importParticipants}
-          >
-            Upload
-          </Button>
-        </ButtonGroup>
+        <Button id="close" onClick={this.onModalClose}>
+          Cancel
+        </Button>
+        <Button
+          disabled={!this.state.file}
+          id="upload"
+          color="primary"
+          onClick={this.importParticipants}
+        >
+          Upload
+        </Button>
       </React.Fragment>
     );
   };

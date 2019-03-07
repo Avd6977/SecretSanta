@@ -39,6 +39,7 @@ export class ApiService {
         const message = response.data.error || response.data.message;
         if (message) {
           window.alert(message);
+          return;
         }
       }
       const message = e.message || "Something went wrong.";

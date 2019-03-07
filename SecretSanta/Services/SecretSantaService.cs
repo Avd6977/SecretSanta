@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SecretSanta.Entities;
 using SecretSanta.Util;
 
 namespace SecretSanta.Services
 {
     public class SecretSantaService
     {
-        public IDictionary<T, T> Generate<T>(IList<T> participants, IDictionary<T, T> bannedPairings)
+        public IDictionary<string, string> Generate(IList<Person> participants, IDictionary<string, string> bannedPairings)
         {
             var to = participants.GetShuffle();
 
@@ -16,15 +16,26 @@ namespace SecretSanta.Services
                 var result = to.ZipToKV(from);
 
                 if (PairingIsValid(bannedPairings, result))
-                    return result.ToDictionary();
+                {
+                    var dictionary = new Dictionary<string, string>();
+                    foreach (var (key, value) in result)
+                    {
+                        var person = key;
+                        var recipient = value;
+                        dictionary.Add($"{person.FirstName} {person.LastName}", $"{recipient.FirstName} {recipient.LastName}");
+                    }
+                    return dictionary;
+                }
             }
 
-            throw new ApplicationException("No valid secret santa list can be generated");
+            return null;
         }
 
-        private bool PairingIsValid<T>(IDictionary<T, T> bannedPairings, IEnumerable<KeyValuePair<T, T>> result)
+        private bool PairingIsValid(IDictionary<string, string> bannedPairings, IEnumerable<KeyValuePair<Person, Person>> result)
         {
-            return result.All(r => !r.Key.Equals(r.Value) && !bannedPairings.Contains(r));
+            return result.All(r => !r.Key.Equals(r.Value) && !bannedPairings.Contains(
+                                       new KeyValuePair<string, string>($"{r.Key.FirstName} {r.Key.LastName}",
+                                           $"{r.Value.FirstName} {r.Value.LastName}")));
         }
     }
 }

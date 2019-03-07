@@ -15,10 +15,19 @@ namespace SecretSanta.Controllers
         private readonly SecretSantaService service = new SecretSantaService();
 
         [HttpGet("results")]
-        public IActionResult GetResults() => Ok(service.Generate(GetParticipantsFromSession(), GetBannedFromSession()));
+        public IActionResult GetResults()
+        {
+            // Retry for odd pairings
+            var results = service.Generate(GetParticipantsFromSession(), GetBannedFromSession()) ??
+                          service.Generate(GetParticipantsFromSession(), GetBannedFromSession());
+            return Json(results);
+        }
 
         [HttpGet("participants")]
         public IActionResult GetParticipants() => Ok(GetParticipantsFromSession());
+
+        [HttpGet("banned")]
+        public IActionResult GetBanned() => Json(GetBannedFromSession());
 
         [HttpPost("import")]
         public IActionResult ImportParticipants([FromBody] IEnumerable<Person> imported, bool replace = true)
@@ -39,6 +48,13 @@ namespace SecretSanta.Controllers
 
             HttpContext.Session.SetString("participants", JsonConvert.SerializeObject(participants));
             return Ok(participants);
+        }
+
+        [HttpPost("banned")]
+        public IActionResult SetBannedPairs([FromBody] IDictionary<string, string> banned)
+        {
+            HttpContext.Session.SetString("banned", JsonConvert.SerializeObject(banned));
+            return Ok(banned);
         }
 
         [HttpPut("add")]
@@ -79,13 +95,13 @@ namespace SecretSanta.Controllers
                 : new List<Person>();
         }
 
-        private IDictionary<Person, Person> GetBannedFromSession()
+        private IDictionary<string, string> GetBannedFromSession()
         {
             var bannedJson = HttpContext.Session.GetString("banned");
 
             return !string.IsNullOrWhiteSpace(bannedJson)
-                ? JsonConvert.DeserializeObject<IDictionary<Person, Person>>(bannedJson)
-                : new Dictionary<Person, Person>();
+                ? JsonConvert.DeserializeObject<IDictionary<string, string>>(bannedJson)
+                : new Dictionary<string, string>();
         }
     }
 }
