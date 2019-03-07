@@ -1,5 +1,5 @@
 export class ApiService {
-  _http;
+  baseUrl = `${window.location.origin}/api`;
 
   defaultHeaders = () => {
     return {
@@ -12,22 +12,22 @@ export class ApiService {
   }
 
   get = async (url, config = {}) =>
-    await this.makeRequest(`${this.baseUrl}/${url}`, "GET", null, config);
+    await this.makeRequest(url, "GET", null, config);
 
   post = async (url, body, config = {}) =>
-    await this.makeRequest(`${this.baseUrl}/${url}`, "POST", body, config);
+    await this.makeRequest(url, "POST", body, config);
 
   put = async (url, body, config = {}) =>
-    await this.makeRequest(`${this.baseUrl}/${url}`, "PUT", body, config);
+    await this.makeRequest(url, "PUT", body, config);
 
   delete = async (url, config = {}) =>
-    await this.makeRequest(`${this.baseUrl}/${url}`, "DELETE", null, config);
+    await this.makeRequest(url, "DELETE", null, config);
 
   makeRequest = async (url, method, body = null, config = {}) => {
     config.headers = { ...config.headers, ...this.defaultHeaders() };
     try {
       const res = await this._http.request({
-        url,
+        url: `${this.baseUrl}${url}`,
         method,
         data: body,
         ...config
@@ -38,11 +38,11 @@ export class ApiService {
       if (response && response.data) {
         const message = response.data.error || response.data.message;
         if (message) {
-          console.alert(message);
+          window.alert(message);
         }
       }
       const message = e.message || "Something went wrong.";
-      console.alert(message);
+      window.alert(message);
     }
   };
 }

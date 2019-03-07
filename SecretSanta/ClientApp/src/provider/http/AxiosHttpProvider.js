@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export class AxiosHttpProvider {
-  async get(url) {
+  async get(url, config) {
     return await axios.get(url, config);
   }
 
