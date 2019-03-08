@@ -1,8 +1,8 @@
 # SecretSanta
 
-Welcome to my Secret Santa project.
+**Welcome to my Secret Santa project.**
 
-To run this project locally, you will need to install dotnet core 2.2, Node, and npm.
+**To run this project locally, you will need to install dotnet core 2.2, Node, and npm.**
 - Open the Solution file in Visual Studio (or your preferred IDE).
 - Open a bash terminal (command prompt or powershell window will work as well).
 - Navigate to the repository home directory
@@ -11,7 +11,7 @@ To run this project locally, you will need to install dotnet core 2.2, Node, and
 - Build and run the solution
 - If a window doesn't open up to localhost:5000, open up a new window
 
-- To consume the api, download Postman (or another similar application)
+**To consume the api, download Postman (or another similar application)**
 - The routes are all localhost:5000/api/sescretsanta/{action}
 - To setup the application through the API and test it, perform the following steps:
   - POST: localhost:5000/api/secretsanta/import with JSON body like [{ "firstName": "Test", "lastName": "User" }, { "firstName": "Test", "lastName": "Banned" ]
@@ -23,7 +23,7 @@ To run this project locally, you will need to install dotnet core 2.2, Node, and
 - You can view all participants by calling GET: localhost:5000/api/secretsanta/participants
 - You can view all banned pairings by calling GET: localhost:5000/api/secretsanta/banned
 
-- To use the front-end website, follow these steps
+**To use the front-end website, follow these steps**
 - Select "Import Participants"
 - Click on the "Click or drag to add a file..." and select a CSV to upload
   - An example file can be downloaded using the "Example File" link
